@@ -1,5 +1,6 @@
 HELP.md
 target/
+src/main/resources/telfoni-007-firebase-adminsdk-u67y8-719374f9c0.json
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

@@ -1,8 +1,7 @@
 package org.bamappli.telfonibackendspring.Controller.advice;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.bamappli.telefonibackend.DTO.ErrorEntity;
-import org.bamappli.telefonibackend.Exception.MyCustomException;
+import org.bamappli.telfonibackendspring.DTO.ErrorEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,12 +27,6 @@ public class ApplicationControllerAdvice {
     @ExceptionHandler({EntityNotFoundException.class})
     public @ResponseBody ErrorEntity handleException3(EntityNotFoundException exception){
         return new ErrorEntity(404, exception.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler({MyCustomException.class})
-    public @ResponseBody ErrorEntity handleException4(MyCustomException exception){
-        return new ErrorEntity(401, exception.getMessage());
     }
 
 }
