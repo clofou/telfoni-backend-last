@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bamappli.telfonibackendspring.Enum.CommandeStatut;
 
+import java.util.Date;
+
 @Entity
 @Getter
 @Setter
@@ -20,7 +22,7 @@ public class Commande {
     private CommandeStatut statutVendeur;
     private CommandeStatut statutAcheteur;
     private CommandeStatut statutController;
-    private DateTime dateLivraison;
+    private Date dateLivraison;
 
     @ManyToOne
     private Transaction transaction;
