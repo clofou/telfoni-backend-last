@@ -16,5 +16,5 @@ import lombok.Setter;
 public class Client extends Utilisateur{
 
     @OneToOne
-    private Panier panier;
+    private Favorite favorite;
 }

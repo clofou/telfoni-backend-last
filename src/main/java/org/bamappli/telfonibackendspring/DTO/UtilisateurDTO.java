@@ -17,7 +17,7 @@ public class UtilisateurDTO {
     private String montantWallet;
     private String montantBloque;
     private Grade grade;
-    private int rating;
+    private double rating;
     private int totalRating;
 
 }

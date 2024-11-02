@@ -22,10 +22,10 @@ public class ClientServiceC {
         Optional<Annonce> annonce = annonceRepo.findById(idAnnonce);
         if(annonce.isPresent()){
             System.out.println("Annonce liked!");
-            if (!currentUser.getPanier().getAnnonceList().contains(annonce.get())){
-                currentUser.getPanier().getAnnonceList().add(annonce.get());
+            if (!currentUser.getFavorite().getAnnonceList().contains(annonce.get())){
+                currentUser.getFavorite().getAnnonceList().add(annonce.get());
             }else{
-                currentUser.getPanier().getAnnonceList().remove(annonce.get());
+                currentUser.getFavorite().getAnnonceList().remove(annonce.get());
             }
         }
 

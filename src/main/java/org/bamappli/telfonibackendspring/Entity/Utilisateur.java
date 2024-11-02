@@ -27,7 +27,7 @@ public abstract class Utilisateur {
     private String photoUrl;
     private Date dateCreation = new Date();
     private String fcmToken;
-    private int rating = 0;
+    private double rating = 0;
     private int totalRating = 0;
     private int points = 0;
     private String verificationCode; // Code de vérification

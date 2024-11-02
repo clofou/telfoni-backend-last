@@ -17,4 +17,5 @@ public class Boutique extends Utilisateur {
     private String description;
     @ManyToOne
     private Admin admin;
+
 }

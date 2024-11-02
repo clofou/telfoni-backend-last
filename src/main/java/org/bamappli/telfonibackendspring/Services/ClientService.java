@@ -3,7 +3,7 @@ package org.bamappli.telfonibackendspring.Services;
 import lombok.AllArgsConstructor;
 import org.bamappli.telfonibackendspring.Entity.*;
 import org.bamappli.telfonibackendspring.Repository.ClientRepo;
-import org.bamappli.telfonibackendspring.Repository.PanierRepo;
+import org.bamappli.telfonibackendspring.Repository.FavoriteRepo;
 import org.bamappli.telfonibackendspring.Repository.RoleRepo;
 import org.bamappli.telfonibackendspring.Repository.UtilisateurRepo;
 import org.bamappli.telfonibackendspring.Utils.UserService;
@@ -25,7 +25,7 @@ public class ClientService implements CrudService<Long, Client> {
     private final UserService userService;
     private final WalletService walletService;
     private final ClientRepo clientRepo;
-    private final PanierRepo panierRepo;
+    private final FavoriteRepo favoriteRepo;
 
     @Override
     public Client creer(Client client) {
@@ -54,9 +54,9 @@ public class ClientService implements CrudService<Long, Client> {
         client.setCompte(compte);
 
         // Creer Un Panier par defaut
-        Panier panier = panierRepo.save(new Panier());
+        Favorite favorite = favoriteRepo.save(new Favorite());
         client.setCompte(compte);
-        client.setPanier(panier);
+        client.setFavorite(favorite);
 
         return clientRepo.save(client);
     }

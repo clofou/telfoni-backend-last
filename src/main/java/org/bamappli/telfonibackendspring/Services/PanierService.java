@@ -1,8 +1,8 @@
 package org.bamappli.telfonibackendspring.Services;
 
 import lombok.AllArgsConstructor;
-import org.bamappli.telfonibackendspring.Entity.Panier;
-import org.bamappli.telfonibackendspring.Repository.PanierRepo;
+import org.bamappli.telfonibackendspring.Entity.Favorite;
+import org.bamappli.telfonibackendspring.Repository.FavoriteRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,28 +11,28 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class PanierService implements CrudService<Long, Panier> {
+public class PanierService implements CrudService<Long, Favorite> {
 
-    private final PanierRepo panierRepo;
+    private final FavoriteRepo favoriteRepo;
 
     @Override
-    public Panier creer(Panier panier) {
-        return panierRepo.save(panier);
+    public Favorite creer(Favorite favorite) {
+        return favoriteRepo.save(favorite);
     }
 
     @Override
-    public Panier modifer(Long id, Panier panier) {
+    public Favorite modifer(Long id, Favorite favorite) {
         throw new IllegalArgumentException("Modif d'un panier impossible");
     }
 
     @Override
-    public Optional<Panier> trouver(Long id) {
-        return panierRepo.findById(id);
+    public Optional<Favorite> trouver(Long id) {
+        return favoriteRepo.findById(id);
     }
 
     @Override
-    public List<Panier> recuperer() {
-        return panierRepo.findAll();
+    public List<Favorite> recuperer() {
+        return favoriteRepo.findAll();
     }
 
     @Override
