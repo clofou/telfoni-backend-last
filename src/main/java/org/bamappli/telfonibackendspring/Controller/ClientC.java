@@ -13,6 +13,7 @@ import org.bamappli.telfonibackendspring.Services.*;
 import org.bamappli.telfonibackendspring.Utils.FileOperation;
 import org.bamappli.telfonibackendspring.Utils.UserService;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -233,8 +234,14 @@ public class ClientC {
         return brandRepo.findAll().stream().map(brandDTOMapper);
     }
 
+
     @PostMapping(path = "test")
     public Message creer(@RequestBody MessageRequestDTO message) throws IOException, ExecutionException, InterruptedException {
         return messageService.creer1(message);
+    }
+
+    @PostMapping("messages/send")
+    public ResponseEntity<String> sendMessage(@RequestBody FileUploadRequest request){
+        return clientServiceC.sendMessage(request);
     }
 }

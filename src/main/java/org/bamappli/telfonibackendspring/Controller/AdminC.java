@@ -1,23 +1,26 @@
 package org.bamappli.telfonibackendspring.Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.bamappli.telfonibackendspring.DTO.*;
-import org.bamappli.telfonibackendspring.Entity.Boutique;
-import org.bamappli.telfonibackendspring.Entity.Brand;
-import org.bamappli.telfonibackendspring.Entity.Controller;
-import org.bamappli.telfonibackendspring.Entity.Reparateur;
+import org.bamappli.telfonibackendspring.Entity.*;
 import org.bamappli.telfonibackendspring.Enum.TransactionStatut;
+import org.bamappli.telfonibackendspring.Mapper.BrandDTOMapper;
 import org.bamappli.telfonibackendspring.Mapper.CommandeDTOMapper;
+import org.bamappli.telfonibackendspring.Mapper.ControllerDTOMapper;
+import org.bamappli.telfonibackendspring.Mapper.ModeleDTOMapper;
+import org.bamappli.telfonibackendspring.Repository.ClientRepo;
 import org.bamappli.telfonibackendspring.Repository.CommandeRepo;
 import org.bamappli.telfonibackendspring.Repository.ControllerRepo;
 import org.bamappli.telfonibackendspring.Repository.TransactionRepo;
-import org.bamappli.telfonibackendspring.Services.BoutiqueService;
-import org.bamappli.telfonibackendspring.Services.BrandService;
-import org.bamappli.telfonibackendspring.Services.ControllerService;
-import org.bamappli.telfonibackendspring.Services.ReparateurService;
+import org.bamappli.telfonibackendspring.Services.*;
+import org.bamappli.telfonibackendspring.Utils.FileOperation;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.naming.ldap.Control;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -30,6 +33,7 @@ public class AdminC {
 
     private AdminCService adminCService;
     private BrandService brandService;
+    private ModeleService modeleService;
     private CommandeRepo commandeRepo;
     private CommandeDTOMapper commandeDTOMapper;
     private TransactionRepo transactionRepo;
@@ -37,6 +41,10 @@ public class AdminC {
     private ReparateurService reparateurService;
     private ControllerService controllerService;
     private ControllerRepo controllerRepo;
+    private ControllerDTOMapper controllerDTOMapper;
+    private ClientRepo clientRepo;
+    private BrandDTOMapper brandDTOMapper;
+    private ModeleDTOMapper modeleDTOMapper;
 
     @PostMapping(path = "client/wallet/recharge")
     void rechargerCompte(@RequestBody WalletDTO wallet) {
@@ -48,9 +56,32 @@ public class AdminC {
         adminCService.retirerArgent(wallet);
     }
 
+    // Brand CRUD
     @PostMapping(path = "brand/ajout")
-    public Brand creer(@RequestBody Brand brand){
+    public Brand creerBrand(@RequestBody Brand brand){
         return brandService.creer(brand);
+    }
+    @GetMapping(path = "brand/liste")
+    public Stream<BrandDTO> listeBrand(){
+        return brandService.recuperer().stream().map(brandDTOMapper);
+    }
+    @DeleteMapping(path = "brand/supprimer/{id}")
+    public void supprimerBrand(@PathVariable Long id){
+       brandService.supprimer(id);
+    }
+
+    // Modele CRUD
+    @PostMapping(path = "modele/ajout")
+    public Modele creerModele(@RequestBody Modele modele){
+        return modeleService.creer(modele);
+    }
+    @GetMapping(path = "modele/liste")
+    public Stream<BrandDTO> listeModele(){
+        return modeleService.recuperer().stream().map(modeleDTOMapper);
+    }
+    @DeleteMapping(path = "modele/supprimer/{id}")
+    public void supprimerModele(@PathVariable Long id){
+        modeleService.supprimer(id);
     }
 
     @GetMapping(path = "user/new")
@@ -76,32 +107,76 @@ public class AdminC {
     }
 
     @GetMapping(path = "/boutique/liste")
-    public List<BoutiqueModel> getAllBoutiquesOrderedByVentes(){
+    public List<BoutiqueModel> getAllBoutiques(){
         return adminCService.getAllBoutiquesOrderedByVentes();
     }
 
     @PostMapping(path = "boutique/ajout")
-    public Boutique creerBoutique(@RequestBody Boutique boutique){
+    public Boutique creerBoutique(@RequestPart("boutique") String boutiqueJson,
+                                  @RequestPart("photos") MultipartFile boutiqueImage) throws JsonProcessingException {
+        Boutique boutique = new ObjectMapper().readValue(boutiqueJson, Boutique.class);
+        try {
+            String photoUrl = FileOperation.uploadFile(boutiqueImage, "src/main/resources/static/boutique");
+            boutique.setPhotoUrl(photoUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return boutiqueService.creer(boutique);
     }
 
     @GetMapping(path = "/reparateur/liste")
-    public List<ReparateurModel> getAllReparateurOrderedByVentes(){
+    public List<ReparateurModel> getAllReparateur(){
         return adminCService.getAllReparateurOrderedByVentes();
     }
 
     @PostMapping(path = "reparateur/ajout")
-    public Reparateur creerReparateur(@RequestBody Reparateur reparateur){
+    public Reparateur creerReparateur(@RequestPart("boutique") String reparateurJson,
+                                      @RequestPart(value = "doc1", required = false) MultipartFile docOff1,
+                                      @RequestPart(value = "doc2", required = false) MultipartFile docOff2,
+                                      @RequestPart(value = "doc3", required = false) MultipartFile docOff3
+                                      ) throws JsonProcessingException {
+        Reparateur reparateur = new ObjectMapper().readValue(reparateurJson, Reparateur.class);
+        try {
+            String photoUrl = FileOperation.uploadFile(docOff1, "src/main/resources/static/reparateur");
+            String photoUrl1 = FileOperation.uploadFile(docOff2, "src/main/resources/static/reparateur");
+            String photoUrl2 = FileOperation.uploadFile(docOff3, "src/main/resources/static/reparateur");
+            reparateur.setDocOff1(photoUrl);
+            reparateur.setDocOff2(photoUrl1);
+            reparateur.setDocOff3(photoUrl2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return reparateurService.creer(reparateur);
     }
 
     @GetMapping(path = "/controller/liste")
-    public List<Controller> getAllControllerOrderedByVentes(){
-        return controllerRepo.findAll();
+    public Stream<ControllerModel> getAllController(){
+        return controllerRepo.findAll().stream().map(controllerDTOMapper);
     }
 
     @PostMapping(path = "controller/ajout")
-    public Controller creerController(@RequestBody Controller controller){
+    public Controller creerController(@RequestPart("boutique") String controllerJson,
+                                      @RequestPart(value = "doc1", required = false) MultipartFile docOff1,
+                                      @RequestPart(value = "doc2", required = false) MultipartFile docOff2,
+                                      @RequestPart(value = "doc3", required = false) MultipartFile docOff3
+    ) throws JsonProcessingException {
+        Controller controller = new ObjectMapper().readValue(controllerJson, Controller.class);
+        try {
+            String photoUrl = FileOperation.uploadFile(docOff1, "src/main/resources/static/controller");
+            String photoUrl1 = FileOperation.uploadFile(docOff2, "src/main/resources/static/controller");
+            String photoUrl2 = FileOperation.uploadFile(docOff3, "src/main/resources/static/controller");
+            controller.setDocOff1(photoUrl);
+            controller.setDocOff2(photoUrl1);
+            controller.setDocOff3(photoUrl2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return controllerService.creer(controller);
     }
+
+    @GetMapping(path = "clients/liste")
+    public List<Client> recupClients(){
+        return clientRepo.findAll();
+    }
+
 }

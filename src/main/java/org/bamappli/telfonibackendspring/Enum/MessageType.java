@@ -4,4 +4,6 @@ public enum MessageType {
     PHOTOS,
     SONG,
     TEXT,
+    VIDEOS,
+    PAIEMENT_CARD
 }
