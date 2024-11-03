@@ -1,5 +1,6 @@
 package org.bamappli.telfonibackendspring.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,9 @@ public class Annonce {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Telephone phone;
+
+    @OneToOne
+    private Transaction transaction;
 
     @ManyToOne
     private Utilisateur utilisateur;

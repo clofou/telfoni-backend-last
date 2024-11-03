@@ -71,7 +71,7 @@ public class AdminCService {
         }
     }
 
-    void transfer(WalletDTO walletDTO) {
+    public void transfer(WalletDTO walletDTO) {
         Client client = clientRepo.findByEmail(walletDTO.getEmail());
         Client receiver = clientRepo.findByEmail(walletDTO.getEmail());
 

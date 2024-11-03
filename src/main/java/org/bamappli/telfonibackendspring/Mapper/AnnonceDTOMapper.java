@@ -2,12 +2,10 @@ package org.bamappli.telfonibackendspring.Mapper;
 
 import lombok.AllArgsConstructor;
 import org.bamappli.telfonibackendspring.DTO.AnnonceDTO;
-import org.bamappli.telfonibackendspring.Entity.Annonce;
-import org.bamappli.telfonibackendspring.Entity.Client;
-import org.bamappli.telfonibackendspring.Entity.Photos;
-import org.bamappli.telfonibackendspring.Entity.Tags;
+import org.bamappli.telfonibackendspring.Entity.*;
 import org.bamappli.telfonibackendspring.Repository.FavoriteRepo;
 import org.bamappli.telfonibackendspring.Repository.StockRepo;
+import org.bamappli.telfonibackendspring.Repository.TransactionRepo;
 import org.bamappli.telfonibackendspring.Utils.UserService;
 import org.springframework.stereotype.Component;
 
@@ -63,7 +61,9 @@ public class AnnonceDTOMapper implements Function<Annonce, AnnonceDTO> {
                         .map(Tags::getNom) // Récupère les noms des photos
                         .collect(Collectors.toList()),
                 brand,
-                annonce.getStatut()
+                annonce.getStatut(),
+                annonce.getTransaction().getId()
+
         );
     }
 }

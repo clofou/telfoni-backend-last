@@ -2,6 +2,8 @@ package org.bamappli.telfonibackendspring.Services;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.bamappli.telfonibackendspring.Controller.AdminCService;
+import org.bamappli.telfonibackendspring.DTO.WalletDTO;
 import org.bamappli.telfonibackendspring.Entity.Transaction;
 import org.bamappli.telfonibackendspring.Entity.Utilisateur;
 import org.bamappli.telfonibackendspring.Enum.AnnonceStatut;
@@ -26,6 +28,7 @@ public class TransactionService implements CrudService<Long, Transaction>{
     private final UtilisateurRepo utilisateurRepo;
     private final PasswordEncoder passwordEncoder;
     private final CommandeService commandeService;
+    private final AdminCService adminCService;
 
     @Override
     public Transaction creer(Transaction transaction) {
@@ -72,14 +75,19 @@ public class TransactionService implements CrudService<Long, Transaction>{
         if (Objects.equals(passwordEncoder.encode(codeSecret), utilisateur.getCompte().getCodeSecret())){
             if (transaction1.isPresent()){
                 Transaction transactionExist = transaction1.get();
-                if (transactionExist.getMontant() <= utilisateur.getCompte().getSolde()){
-                    transactionExist.setDateDeTransaction(new Date());
-                    transactionExist.setStatut(TransactionStatut.PAYER);
-                    transactionExist.getPhone().setStatut(AnnonceStatut.VENDU);
-                    return transactionRepo.save(transactionExist);
-                }else{
-                    throw new IllegalArgumentException("Solde Insuffisant");
-                }
+
+                WalletDTO walletDTO = new WalletDTO();
+                walletDTO.setEmail(transactionExist.getAcheteur().getEmail());
+                walletDTO.setReceiverEmail(transactionExist.getPhone().getUtilisateur().getEmail());
+                walletDTO.setMontant(transactionExist.getMontant());
+
+                adminCService.transfer(walletDTO);
+
+                transactionExist.setDateDeTransaction(new Date());
+                transactionExist.setStatut(TransactionStatut.PAYER);
+                transactionExist.getPhone().setStatut(AnnonceStatut.VENDU);
+
+                return transactionRepo.save(transactionExist);
 
             }else{
                 throw new IllegalArgumentException("La Transaction n'existe pas ou l'utilisateur connecte n'as pas le droit d'effectuer cette action");

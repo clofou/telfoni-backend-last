@@ -27,4 +27,5 @@ public class AnnonceDTO {
     private List<String> tagsList;
     private Long brandId;
     private AnnonceStatut annonceStatut;
+    private Long transactionId;
 }

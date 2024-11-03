@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.bamappli.telfonibackendspring.DTO.*;
 import org.bamappli.telfonibackendspring.Entity.*;
 import org.bamappli.telfonibackendspring.Enum.AnnonceStatut;
+import org.bamappli.telfonibackendspring.Enum.TransactionStatut;
 import org.bamappli.telfonibackendspring.Mapper.*;
 import org.bamappli.telfonibackendspring.Repository.*;
 import org.bamappli.telfonibackendspring.Services.*;
@@ -34,6 +35,8 @@ public class ClientC {
     private final ClientRepo clientRepo;
     private final TelephoneService telephoneService;
     private final TelephoneRepo telephoneRepo;
+    private final DiscussionService discussionService;
+    private final DiscussionRepo discussionRepo;
     private AnnonceRepo annonceRepo;
     private AnnonceDTOMapper annonceDTOMapper;
     private ClientServiceC clientServiceC;
@@ -50,6 +53,7 @@ public class ClientC {
     private HistoriqueWalletRechargeService historiqueWalletRechargeService;
     private PasswordEncoder passwordEncoder;
     private MessageService messageService;
+    private TransactionService transactionService;
 
     @GetMapping(path = "annonces/en_vente")
     Stream<AnnonceDTO> listeAnnonce(){
@@ -94,6 +98,10 @@ public class ClientC {
         telephoneService.creer(telephone);
         Annonce annonce1 = new Annonce();
         annonce1.setPhone(telephone);
+        Transaction transaction = new Transaction();
+        transaction.setStatut(TransactionStatut.NON_PAYER);
+        annonce1.setTransaction(transaction);
+
         return annonceService.creer(annonce1);
     }
 
@@ -243,5 +251,21 @@ public class ClientC {
     @PostMapping("messages/send")
     public ResponseEntity<String> sendMessage(@RequestBody FileUploadRequest request){
         return clientServiceC.sendMessage(request);
+    }
+
+    @GetMapping(path = "discussion/liste")
+    public List<Discussion> discussionList(){
+        Utilisateur utilisateur = userService.getCurrentUser();
+        return discussionRepo.findByAcheteurOrVendeur(utilisateur, utilisateur);
+    }
+
+    @PostMapping(path = "transaction/creer")
+    public Transaction creerTransaction(@RequestBody Transaction transaction){
+        return transactionService.creer(transaction);
+    }
+
+    @PostMapping(path = "transaction/{id}/{codeSecret}")
+    public void payer(@PathVariable String codeSecret, @PathVariable Long id){
+        transactionService.payer(id, codeSecret);
     }
 }
