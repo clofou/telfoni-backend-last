@@ -59,9 +59,6 @@ public class ControllerService implements CrudService<Long, Controller>{
     @Override
     public Controller modifer(Long id, Controller controller) {
         Utilisateur user = userService.getCurrentUser();
-        if (UtilService.isValidPassword(controller.getMotDePasse())){
-            throw new IllegalArgumentException("Le Mot de passe doit comporter plus de 6 caracteres");
-        }
         Optional<Controller> controller1 = controllerRepo.findById(id);
 
         if (controller1.isPresent() && (Objects.equals(user.getRole().getNom(), "ADMIN") || Objects.equals(user.getId(), controller1.get().getId()))){

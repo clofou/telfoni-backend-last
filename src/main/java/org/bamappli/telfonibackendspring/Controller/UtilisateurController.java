@@ -77,6 +77,9 @@ public class UtilisateurController {
         return userDTOMapper.apply(userService.getCurrentUser());
     }
 
+
+
+
     @PostMapping("/update-token")
     public ResponseEntity<String> updateFcmToken(@RequestBody UpdateFcmTokenDTO updateFcmTokenDTO) {
         Optional<Utilisateur> utilisateurOpt = utilisateurRepo.findById(updateFcmTokenDTO.getUserId());

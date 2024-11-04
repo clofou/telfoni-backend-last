@@ -2,11 +2,14 @@ package org.bamappli.telfonibackendspring;
 
 import lombok.AllArgsConstructor;
 import org.bamappli.telfonibackendspring.Entity.Admin;
+import org.bamappli.telfonibackendspring.Entity.Controller;
 import org.bamappli.telfonibackendspring.Entity.Role;
 import org.bamappli.telfonibackendspring.Entity.Wallet;
 import org.bamappli.telfonibackendspring.Repository.AdminRepo;
+import org.bamappli.telfonibackendspring.Repository.ControllerRepo;
 import org.bamappli.telfonibackendspring.Repository.RoleRepo;
 import org.bamappli.telfonibackendspring.Repository.WalletRepo;
+import org.bamappli.telfonibackendspring.Services.ControllerService;
 import org.bamappli.telfonibackendspring.Services.RoleService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,11 +19,13 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
+    private final ControllerService controllerService;
     private RoleService roleService;
     private AdminRepo adminRepo;
     private PasswordEncoder passwordEncoder;
     private RoleRepo roleRepo;
     private WalletRepo walletRepo;
+    private ControllerRepo controllerRepo;
 
     @Override
     public void run(String... args){
@@ -57,6 +62,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setCompte(compte);
             adminRepo.save(admin);
         }
+
 
     }
 }

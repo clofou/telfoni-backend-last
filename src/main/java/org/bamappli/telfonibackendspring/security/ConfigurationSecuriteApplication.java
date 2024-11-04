@@ -51,10 +51,7 @@ public class ConfigurationSecuriteApplication{
 
                                                 .requestMatchers("/boutique/**").hasRole("BOUTIQUE")
                                                 .requestMatchers("/client/**").hasRole("CLIENT")
-
-                                                .requestMatchers(GET, "/controller/**").permitAll()
-                                                .requestMatchers(POST, "/controller").hasAnyRole("ADMIN", "CONTROLLER")
-                                                .requestMatchers(PATCH, "/controller").hasAnyRole("ADMIN", "CONTROLLER")
+                                                .requestMatchers("/controller/**").hasRole("CONTROLLER")
 
                                                 .requestMatchers(GET, "/reparateur/**").permitAll()
                                                 .requestMatchers(POST, "/reparateur").hasAnyRole("ADMIN", "REPARATEUR")
@@ -138,6 +135,7 @@ public class ConfigurationSecuriteApplication{
                                                 .requestMatchers(GET, "/wallet/**").permitAll()
                                                 .requestMatchers(PATCH, "/wallet").hasRole("ADMIN")
                                                 .requestMatchers(GET, "/user/current").hasAnyRole("ADMIN", "BOUTIQUE", "CLIENT", "REPARATEUR", "CONTROLLER")
+                                                .requestMatchers(PATCH, "/user/modify/**").hasAnyRole("ADMIN", "BOUTIQUE", "CLIENT", "REPARATEUR", "CONTROLLER")
 
                                                 .anyRequest().authenticated()
                         )

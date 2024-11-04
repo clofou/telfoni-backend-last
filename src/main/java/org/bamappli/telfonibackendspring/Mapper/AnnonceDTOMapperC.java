@@ -2,10 +2,12 @@ package org.bamappli.telfonibackendspring.Mapper;
 
 import lombok.AllArgsConstructor;
 import org.bamappli.telfonibackendspring.DTO.AnnonceDTO;
-import org.bamappli.telfonibackendspring.Entity.*;
+import org.bamappli.telfonibackendspring.Entity.Annonce;
+import org.bamappli.telfonibackendspring.Entity.Client;
+import org.bamappli.telfonibackendspring.Entity.Photos;
+import org.bamappli.telfonibackendspring.Entity.Tags;
 import org.bamappli.telfonibackendspring.Repository.FavoriteRepo;
 import org.bamappli.telfonibackendspring.Repository.StockRepo;
-import org.bamappli.telfonibackendspring.Repository.TransactionRepo;
 import org.bamappli.telfonibackendspring.Utils.UserService;
 import org.springframework.stereotype.Component;
 
@@ -14,15 +16,14 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
-public class AnnonceDTOMapper implements Function<Annonce, AnnonceDTO> {
+public class AnnonceDTOMapperC implements Function<Annonce, AnnonceDTO> {
     private final UserService userService;
     private final FavoriteRepo favoriteRepo;
     private final StockRepo stockRepo;
 
     @Override
     public AnnonceDTO apply(Annonce annonce) {
-        Client currentUser = (Client) userService.getCurrentUser();
-        boolean isLisked = currentUser.getFavorite().getAnnonceList().contains(annonce);
+        boolean isLisked = false;
         Integer totalLikes = favoriteRepo.Lannonceapparaitdanscombiendepanier(annonce.getId());
         String typeVendeur = "";
         if (annonce.getUtilisateur() instanceof Client){

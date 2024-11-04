@@ -23,9 +23,6 @@ public class Annonce {
     @ManyToOne(cascade = CascadeType.ALL)
     private Telephone phone;
 
-    @OneToOne
-    private Transaction transaction;
-
     @ManyToOne
     private Utilisateur utilisateur;
 

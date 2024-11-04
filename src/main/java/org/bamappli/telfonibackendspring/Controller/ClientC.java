@@ -35,7 +35,7 @@ public class ClientC {
     private final ClientRepo clientRepo;
     private final TelephoneService telephoneService;
     private final TelephoneRepo telephoneRepo;
-    private final DiscussionService discussionService;
+    private final BoutiqueDTOMapper boutiqueDTOMapper;
     private final DiscussionRepo discussionRepo;
     private AnnonceRepo annonceRepo;
     private AnnonceDTOMapper annonceDTOMapper;
@@ -54,6 +54,7 @@ public class ClientC {
     private PasswordEncoder passwordEncoder;
     private MessageService messageService;
     private TransactionService transactionService;
+    private BoutiqueRepo boutiqueRepo;
 
     @GetMapping(path = "annonces/en_vente")
     Stream<AnnonceDTO> listeAnnonce(){
@@ -87,20 +88,19 @@ public class ClientC {
         photos.forEach(photo -> {
             try {
                 String photoUrl = FileOperation.uploadFile(photo, "src/main/resources/static/annonce");
+                System.out.println("OOOO "+ photoUrl);
                 photosList.add(new Photos(null, photoUrl));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
         Telephone telephone = new ObjectMapper().readValue(telephoneJson, Telephone.class);
+        System.out.println("NNNN "+ telephone.getMemoire());
 
         telephone.setPhotosList(photosList);
         telephoneService.creer(telephone);
         Annonce annonce1 = new Annonce();
         annonce1.setPhone(telephone);
-        Transaction transaction = new Transaction();
-        transaction.setStatut(TransactionStatut.NON_PAYER);
-        annonce1.setTransaction(transaction);
 
         return annonceService.creer(annonce1);
     }
@@ -179,10 +179,6 @@ public class ClientC {
         return promotionRepo.findAll().stream().map(promotionDTOMapper);
     }
 
-    @GetMapping(path = "user/current")
-    public UtilisateurDTO getCurrentUserInfo(){
-        return userDTOMapper.apply(userService.getCurrentUser());
-    }
 
     @PatchMapping(path = "user/modify/{id}")
     public Client modifierUserInfo(@PathVariable Long id,@RequestBody Client client){
@@ -267,5 +263,10 @@ public class ClientC {
     @PostMapping(path = "transaction/{id}/{codeSecret}")
     public void payer(@PathVariable String codeSecret, @PathVariable Long id){
         transactionService.payer(id, codeSecret);
+    }
+
+    @GetMapping(path = "boutique/liste")
+    public Stream<BoutiqueResponseDTO> boutiqueListe(){
+        return boutiqueRepo.findAll().stream().map(boutiqueDTOMapper);
     }
 }

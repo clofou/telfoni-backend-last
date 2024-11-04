@@ -5,5 +5,5 @@ import org.bamappli.telfonibackendspring.Entity.Controller;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ControllerRepo extends JpaRepository<Controller, Long> {
-
+    Controller findByEmail(String email);
 }

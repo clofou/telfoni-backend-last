@@ -6,14 +6,8 @@ import lombok.AllArgsConstructor;
 import org.bamappli.telfonibackendspring.DTO.*;
 import org.bamappli.telfonibackendspring.Entity.*;
 import org.bamappli.telfonibackendspring.Enum.TransactionStatut;
-import org.bamappli.telfonibackendspring.Mapper.BrandDTOMapper;
-import org.bamappli.telfonibackendspring.Mapper.CommandeDTOMapper;
-import org.bamappli.telfonibackendspring.Mapper.ControllerDTOMapper;
-import org.bamappli.telfonibackendspring.Mapper.ModeleDTOMapper;
-import org.bamappli.telfonibackendspring.Repository.ClientRepo;
-import org.bamappli.telfonibackendspring.Repository.CommandeRepo;
-import org.bamappli.telfonibackendspring.Repository.ControllerRepo;
-import org.bamappli.telfonibackendspring.Repository.TransactionRepo;
+import org.bamappli.telfonibackendspring.Mapper.*;
+import org.bamappli.telfonibackendspring.Repository.*;
 import org.bamappli.telfonibackendspring.Services.*;
 import org.bamappli.telfonibackendspring.Utils.FileOperation;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +29,9 @@ public class AdminC {
     private BrandService brandService;
     private ModeleService modeleService;
     private CommandeRepo commandeRepo;
+    private AnnonceRepo annonceRepo;
     private CommandeDTOMapper commandeDTOMapper;
+    private AnnonceDTOMapperC annonceDTOMapper;
     private TransactionRepo transactionRepo;
     private BoutiqueService boutiqueService;
     private ReparateurService reparateurService;
@@ -177,6 +173,16 @@ public class AdminC {
     @GetMapping(path = "clients/liste")
     public List<Client> recupClients(){
         return clientRepo.findAll();
+    }
+
+    @PostMapping(path = "controller/simple")
+    public Controller creerCon(@RequestBody Controller controller){
+        return controllerService.creer(controller);
+    }
+
+    @GetMapping(path = "annonces/tout")
+    Stream<AnnonceDTO> listeAnnonceAll(){
+        return annonceRepo.findAll().stream().map(annonceDTOMapper);
     }
 
 }
